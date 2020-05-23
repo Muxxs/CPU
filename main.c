@@ -75,19 +75,44 @@ int ProgramCount(int type){
     }
 }
 
-//算术处理方法
+//算术处理方法 Finish
 int Calculate(int Op,int Sub1,int Sub2,int Li){
     if (Op==2){
         if(Sub2==0){
             // 寄存器A -> A + 立即数
             DataRegister[Sub1-1]+=Li;
         } else{
-            // 寄存器A ->
+            // 寄存器A -> A + 寄存器B 地址 -> 内存
+            DataRegister[Sub1-1]+=GetMemorry(AddressRegister[Sub2-1]);
+        }
+    } else if (Op==3){
+        if (Sub2==0){
+            // 寄存器A -> A - 立即数
+            DataRegister[Sub1-1]-=Li;
+        } else{
+            // 寄存器A -> A - 寄存器B 地址 -> 内存
+            DataRegister[Sub1-1]-=GetMemorry(AddressRegister[Sub2-1]);
+        }
+    } else if (Op==4){
+        if(Sub2==0){
+            // 寄存器A -> A * 立即数
+            DataRegister[Sub1-1]*=Li;
+        } else{
+            // 寄存器A -> A * 寄存器B 地址 -> 内存
+            DataRegister[Sub1-1]*=GetMemorry(AddressRegister[Sub2-1]);
+        }
+    }else if (Op==5){
+        if(Sub2==0){
+            // 寄存器A -> A / 立即数
+            DataRegister[Sub1-1]/=Li;
+        } else{
+            // 寄存器A -> A / 寄存器B 地址 -> 内存
+            DataRegister[Sub1-1]/=GetMemorry(AddressRegister[Sub2-1]);
         }
     }
 }
 
-//数据传送方法
+//数据传送方法  Finish
 int DataTransform(int Sub1,int Sub2,int Li){
     if (Sub1>4){
         WriteMemorry(Sub2-1,DataRegister[Sub1-1]);
@@ -98,7 +123,7 @@ int DataTransform(int Sub1,int Sub2,int Li){
         // 立即数 -> 寄存器A
 
     }else{
-        DataRegister[Sub1-1]=GetMemorry(Sub2-1);
+        DataRegister[Sub1-1]=GetMemorry(AddressRegister[Sub2-1]);
         // 寄存器B 地址 内容 -> 寄存器A
     }
 }
