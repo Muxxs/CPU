@@ -10,12 +10,13 @@ char Mid[32];
 int CountOne=0;  // 程序计数器
 
 // 内存
-int DataMemory[16384][8];  //数据段
-int CodeMemory[16384][8];  //代码段
+int DataMemory[16384];  //数据段
+int CodeMemory[16384];  //代码段
 
 // 通用寄存器
 int DataRegister[4];  //数据寄存器
 int AddressRegister[4]; //地址寄存器
+int Flag=0;
 int Ir[17]; //指令寄存器
 
 // 操作码处理
@@ -75,7 +76,68 @@ int ProgramCount(int type){
     }
 }
 
-//算术处理方法 Finish
+// 比较指令处理 Finish
+int Compare(int Sub1,int Sub2,int Li){
+    if (Sub2==0){
+        // 寄存器A 与 立即数 比较
+        // 相等 -> 标志寄存器=0
+        // A > 立即数 -> 标志寄存器= 1
+        // A < 立即数 -> 标志寄存器=-1
+
+        int CompareNum=DataRegister[Sub1-1];
+        if (CompareNum==Li){
+            Flag=0;
+        } else if (CompareNum>Li){
+            Flag=1;
+        } else if (CompareNum<Li){
+            Flag=-1;
+        }
+    }else{
+        // 寄存器A 与 寄存器B 地址 -> 内存 比较
+        // 相等 -> 标志寄存器=0
+        // A > 立即数 -> 标志寄存器= 1
+        // A < 立即数 -> 标志寄存器=-1
+        int CompareNum=DataRegister[Sub1-1];
+        if (CompareNum==Li){
+            Flag=0;
+        } else if (CompareNum>Li){
+            Flag=1;
+        } else if (CompareNum<Li){
+            Flag=-1;
+        }
+    }
+}
+
+
+// 逻辑运算指令 Stand
+int Logic(int Op,int Sub1,int Sub2,int Li){
+    if (Op==6){
+        if (Sub2==0) {
+            // 寄存器A -> 逻辑与 立即数
+
+        } else{
+            // 寄存器A -> 逻辑与 寄存器B 地址 -> 内存
+
+        }
+    } else if(Op==7){
+        if (Sub2==0) {
+            // 寄存器A -> 逻辑或 立即数
+
+        } else{
+            // 寄存器A -> 逻辑或 寄存器B 地址 -> 内存
+        }
+    }else if(Op==8){
+        if (Sub2==0) {
+            // 寄存器A -> 逻辑非 寄存器A
+
+        } else{
+            // 寄存器B 地址 -> 内存 -> 逻辑非 寄存器B 地址 -> 内存
+        }
+    }
+}
+
+
+// 算术处理方法 Finish
 int Calculate(int Op,int Sub1,int Sub2,int Li){
     if (Op==2){
         if(Sub2==0){
@@ -112,7 +174,7 @@ int Calculate(int Op,int Sub1,int Sub2,int Li){
     }
 }
 
-//数据传送方法  Finish
+// 数据传送方法  Finish
 int DataTransform(int Sub1,int Sub2,int Li){
     if (Sub1>4){
         WriteMemorry(Sub2-1,DataRegister[Sub1-1]);
@@ -156,9 +218,11 @@ int main()
 
     }else if (Coporation<=8){
         //逻辑
+        Logic(Coporation,SubOne,SubTwo,LiNumber);
 
     } else if (Coporation==9){
         //比较
+        Compare(SubOne,SubTwo,LiNumber);
 
     }else if (Coporation==10){
         //跳转
@@ -170,7 +234,6 @@ int main()
         //输出
 
     }
-
 
     return 0;
 }
